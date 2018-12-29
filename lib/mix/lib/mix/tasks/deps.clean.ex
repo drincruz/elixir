@@ -118,6 +118,7 @@ defmodule Mix.Tasks.Deps.Clean do
       # Skip this step if --build option is specified or if
       # the dependency is local, i.e., referenced using :path.
       if build_only? || app in local do
+        clean_deps_src(deps_path, app)
         :do_not_delete_source
       else
         deps_path
@@ -125,5 +126,13 @@ defmodule Mix.Tasks.Deps.Clean do
         |> File.rm_rf!()
       end
     end)
+  end
+
+  # Clean up dependency src directories
+  defp clean_deps_src(deps_path, app) do
+    deps_path
+    |> Path.join(to_string(app) <> "/src/*.erl")
+    |> Path.wildcard()
+    |> Enum.each(&File.rm!/1)
   end
 end

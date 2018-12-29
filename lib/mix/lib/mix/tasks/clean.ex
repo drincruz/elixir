@@ -36,9 +36,12 @@ defmodule Mix.Tasks.Clean do
       |> Path.join("*#{opts[:only]}")
 
     if opts[:deps] do
+      Mix.Tasks.Deps.Clean.run(["--all"])
+
       build
       |> Path.wildcard()
       |> Enum.each(&File.rm_rf/1)
+
     else
       build
       |> Path.join("lib/#{Mix.Project.config()[:app]}")
